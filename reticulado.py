@@ -57,6 +57,13 @@ class Reticulado(object):
     def recuperar_fuerzas(self):
         """Implementar"""
         return
-    def __str__(self):
-        """Implementar"""
-        return s
+    
+	def _str_(self):
+		s = "reticulado \n"
+		s += "Nodos \n"
+		s += f"{self.xyz}"
+		s += "Barras \n"
+		s += f"{self.barras}"
+		return s
+
+    

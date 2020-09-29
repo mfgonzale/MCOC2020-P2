@@ -32,7 +32,7 @@ class Reticulado(object):
 	def calcular_peso_total(self):
 		w=0
 		for i in self.barras:
-			w += i.calcular_peso(self)
+			w += Barra.calcular_peso(i,self)
 		return w
 
 	def obtener_nodos(self):
@@ -64,8 +64,10 @@ class Reticulado(object):
 		"""Implementar"""
 		return
 
-	def __str__(self):
-		s = "Hola soy un reticulado!\n"
-		s += "mis nodos son:"
+	def _str_(self):
+       		s = "reticulado \n"
+		s += "Nodos \n"
 		s += f"{self.xyz}"
+		s += "Barras \n"
+		s += f"{self.barras}"
 		return s

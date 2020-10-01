@@ -73,9 +73,9 @@ class Barra(object):
 		[xi,yi,zi] = ret.xyz[self.ni]
 		[xj,yj,zj] = ret.xyz[self.nj]
 		
-		self.the = np.arccos((xj-xi)/L)
+		the = np.arccos((xj-xi)/L)
 		
-		self.Tthe = np.matrix([-np.cos(the),-np.sin(the),np.cos(the),np.sin(the)])
+		Tthe = np.matrix([-np.cos(the),-np.sin(the),np.cos(the),np.sin(the)])
 		
 		ke = (Tthe.T @ Tthe)*k
 		
@@ -107,8 +107,24 @@ class Barra(object):
 		"""Devuelve la fuerza se que debe resistir la barra. Un escalar tipo double. 
 		ret: instancia de objeto tipo reticulado
 		"""
-		Thte = 5
-		se = A*E/L * Tthe.T * ue
+		[xi,yi,zi] = ret.xyz[self.ni]
+		[xj,yj,zj] = ret.xyz[self.nj]
+		
+		the = np.arccos((xj-xi)/L)		
+		Tthe = np.array([-np.cos(the),-np.sin(the),np.cos(the),np.sin(the)])
+
+		u = ret.resolver_sistema()
+
+		ue= np.traspose(np.zeros(4))
+
+		ue[0]+= u[self.ni]
+		ue[1]+= u[self.ni+1]
+		ue[2]+= u[self.nj]
+		ue[3]+= u[self.nj+1]
+
+		delta = Tthe*ue
+
+		se = self.A*self.E/self.L * delta
 		
 		return se
 

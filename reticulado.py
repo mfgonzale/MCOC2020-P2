@@ -35,16 +35,10 @@ class Reticulado(object):
             w += i.calcular_peso(self)
         return w
     def obtener_nodos(self):
-        """Implementar"""
-
-        return
+        return self.xyz
 
     def obtener_barras(self):
         return self.barras
-
-
-
-
 
     def agregar_restriccion(self, nodo, gdl, valor=0.0):
         if nodo not in self.restricciones:

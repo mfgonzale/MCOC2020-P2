@@ -96,3 +96,8 @@ class Reticulado(object):
             n = b.obtener_conectividad()
             s += f"{i} : [ {n[0]} {n[1]} ] \n"
 		return s
+	
+	
+	
+	
+	

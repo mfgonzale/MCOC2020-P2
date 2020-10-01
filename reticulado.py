@@ -40,21 +40,36 @@ class Reticulado(object):
 		return self.barras
 
 	def agregar_restriccion(self, nodo, gdl, valor=0.0):
-		"""Implementar"""
-		if nodo in self.restricciones:
-			self.restricciones[nodo].append([gdl,valor])
-		else:
-			self.restricciones[nodo] = [[gdl,valor]]
-		pass
+		
+        	if nodo not in self.restricciones:
+            		self.restricciones[nodo] = [[gdl,valor]]
+        	else:
+            		self.restricciones[nodo].append([gdl,valor])
 
 	def agregar_fuerza(self, nodo, gdl, valor):
-		"""Implementar"""
-		return
-
+		if nodo not in self.cargas:
+			self.cargas[nodo] = [[gdl,valor]]
+        	else:
+			self.cargas[nodo].append([gdl,valor])
 	def ensamblar_sistema(self):
-		"""Implementar"""
-		return
-
+		
+		Ngdl = self.Nnodos * self.Ndimensiones
+		self.K= np.zeros((Ngdl,Ngdl), dtype=np.double)
+       		self.f= np.zeros((Ngdl), dtype=np.double)
+        	self.u= np.zeros((Ngdl), dtype=np.double)
+		for b in self.barras:
+           		ke= b.obtener_rigidez(self)
+            		fe= b.obtener_vector_de_cargas(self)
+            		ni,nj = b.obtener_conectividad()
+            		d= [2*ni,2*ni+1,2*nj,2*nj+1]
+            		ReaccionesPorBarra = 2*(self.Ndimensiones)
+			for i in range(ReaccionesPorBarra):
+				p=d[i]
+                		for j in range(ReaccionesPorBarra):
+					q = d[j]
+                    			self.K[p,q] += ke[i,j]
+               			self.f[p] += fe[j]
+				
 	def resolver_sistema(self):
 		"""Implementar"""
 		return

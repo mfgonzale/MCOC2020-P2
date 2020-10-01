@@ -40,10 +40,6 @@ class Reticulado(object):
     def obtener_barras(self):
         return self.barras
 
-
-
-
-
     def agregar_restriccion(self, nodo, gdl, valor=0.0):
         if nodo not in self.restricciones:
             self.restricciones[nodo] = [[gdl,valor]]

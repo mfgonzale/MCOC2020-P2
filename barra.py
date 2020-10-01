@@ -107,7 +107,7 @@ class Barra(object):
 		"""Devuelve la fuerza se que debe resistir la barra. Un escalar tipo double. 
 		ret: instancia de objeto tipo reticulado
 		"""
-
+		Thte = 5
 		se = A*E/L * Tthe.T * ue
 		
 		return se

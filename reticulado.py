@@ -80,7 +80,7 @@ class Reticulado(object):
     def recuperar_fuerzas(self):
         fuerzas = np.zeros((len(self.barras)), dtype=np.double)
         for i,b in enumerate(self.barras):
-		fuerzas[i] = b.obtener_fuerza(self)
+            fuerzas[i] = b.obtener_fuerza(self)
         return fuerzas
 
     def resolver_sistema(self):

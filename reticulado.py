@@ -73,26 +73,85 @@ class Reticulado(object):
                     self.K[p,q] += ke[i,j]
                 self.f[p] += fe[j]
 
-    def resolver_sistema(self):
-        """Implementar"""
-        return
-
-
-
+    def obtener_desplazamiento_nodal(self,n):
+	dofs = [2*n, 2*n+1]
+	return self.u[dofs]
 
     def recuperar_fuerzas(self):
-        """Implementar"""
-        return
+        fuerzas = np.zeros((len(self.barras)), dtype=np.double)
+        for i,b in enumerate(self.barras):
+		fuerzas[i] = b.obtener_fuerza(self)
+        return fuerzas
 
+    def resolver_sistema(self):
+
+        uc = []
+        uf = [] 
+        for i in self.restricciones:
+            if i[1] == 0:
+                uc.append(i[1])
+            else:
+                uf.append(i[1])
+        
+        for b in self.barras:
+            k= b.obtener_rigidez(self)
+
+    
+        kff = k[np.ix_(uf, uf)]
+        kfc = k[np.ix_(uf, uc)]
+        kcf = kfc.T
+        kcc = k[np.ix_(uc, uc)]
+
+        ff = kff@uf
+        fc = kcc@uc
+
+        uf = solve(kff, ff - kfc@uc)
+
+        self.rc = kcf@uf + kcc@uc - fc
+
+        u =[uc,uf]
+        return u
+    
+    
     def _str_(self):
-        s = "reticulado \n"
-        s += "Nodos \n"
+        s = "Reticulado: \n"
+        s += "Nodos: \n"
         for n in range(self.Nnodos):
-            s += f"{n} : ({self.xyz[n,0]}, {self.xyz[n,1]}, {self.xyz[n,2]})\n"
+            s += f"{n} : ({self.xyz[n,0]}, {self.xyz[n,1]}, {self.xyz[n,2]}, {self.xyz[n,3]}, {self.xyz[n,4]})\n"
         s += "\n\n"
 
-        s += "Barras \n"
+        s += "Barras: \n"
         for i, b in enumerate(self.barras):
             n = b.obtener_conectividad()
             s += f"{i} : [ {n[0]} {n[1]} ] \n"
+        s += "\n\n"
+
+        s += "Restricciones: \n"
+        for d in self.restricciones:
+        	s += f"{d} : {self.restricciones[d]} \n"
+        s += "\n\n"
+    
+        s += "Cargas: \n"
+        for d in self.cargas:
+        	s += f"{d} : {self.cargas[d]} \n"
+        s += "\n\n"
+            
+            
+        if self.tiene_solucion:
+            s += "desplazamientos:\n"
+            if self.Ndimensiones == 2:
+                uvw = self.u.reshape((-1,2))
+                for n in range(self.Nnodos):
+                    s += f"  {n} : ( {uvw[n,0]}, {uvw[n,1]}) \n "
+        s += "\n\n"
+
+        if self.tiene_solucion:
+            f = self.recuperar_fuerzas()
+            s += "fuerzas:\n"
+            for b in range(len(self.barras)):
+                s += f"  {b} : {f[b]}\n"
+        s += "\n"
+    
+        
         return s
+

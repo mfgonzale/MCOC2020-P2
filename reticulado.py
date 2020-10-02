@@ -73,16 +73,18 @@ class Reticulado(object):
                     self.K[p,q] += ke[i,j]
                 self.f[p] += fe[j]
 
-    def resolver_sistema(self):
-        """Implementar"""
-        return
-
-
-
+    def obtener_desplazamiento_nodal(self,n):
+	dofs = [2*n, 2*n+1]
+	return self.u[dofs]
 
     def recuperar_fuerzas(self):
-        """Implementar"""
-        return
+        fuerzas = np.zeros((len(self.barras)), dtype=np.double)
+        for i,b in enumerate(self.barras):
+		fuerzas[i] = b.obtener_fuerza(self)
+        return fuerzas
+
+    def resolver_sistema(self):
+     	return
 
     def _str_(self):
         s = "reticulado \n"

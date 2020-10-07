@@ -17,119 +17,132 @@ class Barra(object):
 		self.σy = σy
 
 	def obtener_conectividad(self):
-		return [self.ni,self.nj]
+		return [self.ni, self.nj]
 
 	def calcular_area(self):
-		try:
-			return self.A
-		except:
-			self.A = np.pi*(2*self.R*self.t - self.t**2)
-			return self.A
-
+		A = np.pi*(self.R**2) - np.pi*((self.R-self.t)**2)
+		return A
 
 	def calcular_largo(self, reticulado):
 		"""Devuelve el largo de la barra. 
 		xi : Arreglo numpy de dimenson (3,) con coordenadas del nodo i
 		xj : Arreglo numpy de dimenson (3,) con coordenadas del nodo j
 		"""
-		try:
-			return self.L
-		except:
-			xi = reticulado.xyz[self.ni]
-			xj = reticulado.xyz[self.nj]
-			self.L = np.sqrt( (xi[0]-xj[0])**2 + (xi[1]-xj[1])**2 + (xi[2]-xj[2])**2 )
-			return self.L
+		xi = reticulado.obtener_coordenada_nodal(self.ni)
+		xj = reticulado.obtener_coordenada_nodal(self.nj)
+		dij = xi-xj
+		return np.sqrt(np.dot(dij,dij))
 
 	def calcular_peso(self, reticulado):
-		"""Devuelve el peso de la barra. 
+		"""Devuelve el largo de la barra. 
 		xi : Arreglo numpy de dimenson (3,) con coordenadas del nodo i
 		xj : Arreglo numpy de dimenson (3,) con coordenadas del nodo j
 		"""
-		try:
-			return self.M
-		except:
-			try:
-				A = self.A
-			except:
-				A = self.calcular_area()
-			try:
-				L = self.L
-			except:
-				L = self.calcular_largo(reticulado)
-			
-			self.M = A*L*g*self.ρ
-			return self.M
+		L = self.calcular_largo(reticulado)
+		A = self.calcular_area()
+		return self.ρ * A * L * g
+
+
+
+
+
+
+
+
+
+
 
 	def obtener_rigidez(self, ret):
-		"""Devuelve la rigidez ke del elemento. Arreglo numpy de (4x4)
-		ret: instancia de objeto tipo reticulado
-		"""
-
-
-		L = self.calcular_largo(ret)
 		A = self.calcular_area()
-		k = self.E * A/L
-		
-		[xi,yi,zi] = ret.xyz[self.ni]
-		[xj,yj,zj] = ret.xyz[self.nj]
-		
-		the = np.arccos((xj-xi)/L)
-		
-		Tthe = np.matrix([-np.cos(the),-np.sin(the),np.cos(the),np.sin(the)])
-		
-		ke = (Tthe.T @ Tthe)*k
-		
-		return np.array(ke)
-		
+		L = self.calcular_largo(ret)
+
+		xi = ret.obtener_coordenada_nodal(self.ni)
+		xj = ret.obtener_coordenada_nodal(self.nj)
+
+		cosθ = (xj[0] - xi[0])/L
+		sinθ = (xj[1] - xi[1])/L
+
+		Tθ = np.array([ -cosθ, -sinθ, cosθ, sinθ ]).reshape((4,1))
+
+		return self.E * A / L * (Tθ @ Tθ.T )
+
 	def obtener_vector_de_cargas(self, ret):
-		"""Devuelve el vector de cargas nodales fe del elemento. Vector numpy de (4x1)
-		ret: instancia de objeto tipo reticulado
-		"""
 		W = self.calcular_peso(ret)
-		ni,nj=self.ni,self.nj
-		
-		fe = np.zeros(4)
-		
-		fe[1]-=W/2.
-		fe[3]-=W/2.
-		
-		if ni in ret.cargas:
-			for f in ret.cargas[ni]:
-				fe[f[0]] += f[1]
-		if nj in ret.cargas:
-			for f in ret.cargas[nj]:
-				fe[f[0]+2] += f[1]
-        
-		return np.array(np.matrix(fe).T)
+
+		return np.array([0, -W, 0, -W])
 
 
 	def obtener_fuerza(self, ret):
-		"""Devuelve la fuerza se que debe resistir la barra. Un escalar tipo double. 
-		ret: instancia de objeto tipo reticulado
+		ue = np.zeros(4)
+		ue[0:2] = ret.obtener_desplazamiento_nodal(self.ni)
+		ue[2:] = ret.obtener_desplazamiento_nodal(self.nj)
+		
+		A = self.calcular_area()
+		L = self.calcular_largo(ret)
+
+		xi = ret.obtener_coordenada_nodal(self.ni)
+		xj = ret.obtener_coordenada_nodal(self.nj)
+
+		cosθ = (xj[0] - xi[0])/L
+		sinθ = (xj[1] - xi[1])/L
+
+		Tθ = np.array([ -cosθ, -sinθ, cosθ, sinθ ]).reshape((4,1))
+
+		return self.E * A / L * (Tθ.T @ ue)
+
+
+
+
+
+	def chequear_diseño(self, Fu, ϕ=0.9):
+		"""Para la fuerza Fu (proveniente de una combinacion de cargas)
+		revisar si esta barra cumple las disposiciones de diseño.
 		"""
-		[xi,yi,zi] = ret.xyz[self.ni]
-		[xj,yj,zj] = ret.xyz[self.nj]
-		
-		the = np.arccos((xj-xi)/L)		
-		Tthe = np.array([-np.cos(the),-np.sin(the),np.cos(the),np.sin(the)])
-
-		u = ret.resolver_sistema()
-
-		ue= np.traspose(np.zeros(4))
-
-		ue[0]+= u[self.ni]
-		ue[1]+= u[self.ni+1]
-		ue[2]+= u[self.nj]
-		ue[3]+= u[self.nj+1]
-
-		delta = Tthe*ue
-
-		se = self.A*self.E/self.L * delta
-		
-		return se
+		I = (np.pi/4)*(self.R**4 - (self.R - self.t)**4)
+		i = np.sqrt(I/self.A)
+		esbeltez = self.L/i
+		if i<300:
+			#print(f'Barra {[self.ni,self.nj]} es muy esbelta')
+			return False
+		elif Fu>0:
+			Pn = min(self.A*self.σy,(np.pi**2)*self.E*I/(self.L**2))
+			if Pn*ϕ<Fu:
+				#print(f'Barra {[self.ni,self.nj]} falla en compresion')
+				return False
+		elif Fu<0:
+			Fn = self.A*self.σy
+			if Fn*ϕ<-Fu:
+				#print(f'Barra {[self.ni,self.nj]} falla en traccion')
+				return False
+		else:
+			return True
 
 
+	def obtener_factor_utilizacion(self, Fu, ϕ=0.9):
+		"""Para la fuerza Fu (proveniente de una combinacion de cargas)
+		calcular y devolver el factor de utilización
+		"""
+		if Fu>0:
+			Pn = min(self.A*self.σy,(np.pi**2)*self.E*I/(self.L**2))
+			FU = Fu/(Pn*ϕ)
+		elif Fu<0:
+			Fn = self.A*self.σy
+			FU = -Fu/(Fn*ϕ)
+		else:
+			FU = 0.
+
+		return FU
 
 
+	def rediseñar(self, Fu, ret, ϕ=0.9):
+		"""Para la fuerza Fu (proveniente de una combinacion de cargas)
+		re-calcular el radio y el espesor de la barra de modo que
+		se cumplan las disposiciones de diseño lo más cerca posible
+		a FU = 1.0.
+		"""
+		FU = self.obtener_factor_utilizacion(Fu, ϕ)
+		self.R = 0.9*self.R   #cambiar y poner logica de diseño
+		self.t = 0.9*self.t   #cambiar y poner logica de diseño
+		return None
 
 

@@ -74,8 +74,8 @@ class Reticulado(object):
                 self.f[p] += fe[j]
 
     def obtener_desplazamiento_nodal(self,n):
-	dofs = [2*n, 2*n+1]
-	return self.u[dofs]
+        dofs = [2*n, 2*n+1]
+        return self.u[dofs]
 
     def recuperar_fuerzas(self):
         fuerzas = np.zeros((len(self.barras)), dtype=np.double)

@@ -94,10 +94,13 @@ class Barra(object):
 
 
 
-	def chequear_diseño(self, Fu, ret, ϕ=0.9,R=self.R,t=self.t):
+	def chequear_diseño(self, Fu, ret, ϕ=0.9,R=0,t=0):
 		"""Para la fuerza Fu (proveniente de una combinacion de cargas)
 		revisar si esta barra cumple las disposiciones de diseño.
 		"""
+		if R==0 and t==0:
+			R = self.R
+			t = self.t
 		L = self.calcular_largo(ret)
 		A = np.pi*(R**2) - np.pi*((R-t)**2)
 		I = (np.pi/4)*(R**4 - (R - t)**4)
@@ -154,7 +157,7 @@ class Barra(object):
 			R = np.linspace(Rmin,Rmin + 50.,51)
 			soluciones = [Rmin,Rmin]#R,t
 			Amin = Areq + 200.
-			for r in R
+			for r in R:
 				t = int((np.sqrt(np.pi*r**2 - Areq) + r*np.sqrt(np.pi))/np.sqrt(np.pi))
 				A = np.pi*(r**2) - np.pi*((r-t)**2)
 				if self.chequear_diseño(Fu, ret, ϕ,R=r,t=t) and A<Amin:
@@ -173,7 +176,7 @@ class Barra(object):
 			R = np.linspace(Rmin,Rmin + 50.,51)
 			soluciones = [Rmin,Rmin]#R,t
 			Amin = Areq + 200.
-			for r in R
+			for r in R:
 				t = int((np.sqrt(np.pi*r**2 - Areq) + r*np.sqrt(np.pi))/np.sqrt(np.pi))
 				A = np.pi*(r**2) - np.pi*((r-t)**2)
 				if self.chequear_diseño(Fu, ret, ϕ,R=r,t=t) and A<Amin:

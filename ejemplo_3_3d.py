@@ -107,6 +107,7 @@ f = ret.recuperar_fuerzas()
 fu = ret.recuperar_factores_de_utilizacion(f)
 
 
+
 ver_reticulado_3d(ret, 
     opciones_nodos = {
         "usar_posicion_deformada": True,

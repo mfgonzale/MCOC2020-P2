@@ -144,7 +144,7 @@ class Reticulado(object):
             dofs = [3*n, 3*n+1 ,3*n+2]
         else:
             print("ERROR...")
-            return self.u[dofs]
+        return self.u[dofs]
 
 
 

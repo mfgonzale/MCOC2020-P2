@@ -1,4 +1,5 @@
 import numpy as np
+from scipy.linalg import solve
 
 class Reticulado(object):
     """Define un reticulado"""
@@ -110,7 +111,7 @@ class Reticulado(object):
             for carga in self.cargas[nodo]:
                 gdl = carga[0]
                 valor = carga[1]
-                gdl_global = Ndimensiones*nodo + gdl
+                gdl_global = self.Ndimensiones*nodo + gdl
                 self.f[gdl_global] = valor
 
         #1 Particionar:
@@ -137,9 +138,9 @@ class Reticulado(object):
 
     def obtener_desplazamiento_nodal(self,n):
 
-        if Ndimensiones ==2:
+        if self.Ndimensiones ==2:
             dofs = [2*n, 2*n+1]
-        if Ndimensiones ==3:
+        if self.Ndimensiones ==3:
             dofs = [3*n, 3*n+1 ,3*n+2]
         else:
             print("ERROR...")
@@ -163,9 +164,9 @@ class Reticulado(object):
 
         return FU
 
-    def redisenar(self, Fu, ϕ=0.9):
-        for i,b in enumerate(self.barras):
-            b.redisenar(Fu[i], self, ϕ)
+#def rediseñar(self, Fu, ϕ=0.9):
+#        for i,b in enumerate(self.barras):
+#            b.redisenar(Fu[i], self, ϕ)
 
 
 

@@ -30,7 +30,9 @@
   
 * Funcion Rediseño de cada barra.
   
-  *sadadad
+  *Al principio descarta el rediseño si es que el factor de utilización es igual a 1 y el diseño original cumple con los            requisitos mínimos.
+   Luego de identificar si la fuerza es en tracción o compresión, calcula el área requerida para cumplir con la fluencia de la      barra, obteniendo de esta el radio mínimo de la barra con el espesor igual al radio mínimo.
+   Lo fundamental de la función es que toma el Rmin y recorre un arreglo de 501 elementos que son desde el Rmin al Rmin + 500      mm.
 
 * Factores de utilizacion nuevos.
   
@@ -59,6 +61,8 @@
 * Desplazamiento vertical maximo antes de los cambios.
 
 ![img](/desplazamientonodos.png)
+
+Se observan los datos respectivos al eje Z , el mayor seria claramente 1 y 6 e cargas muertas y nodo 3 en cargas vivas. 
 
 * Desplazamiento vertical maximo despues de los cambios.
 

@@ -33,6 +33,8 @@
   *Al principio descarta el rediseño si es que el factor de utilización es igual a 1 y el diseño original cumple con los            requisitos mínimos.
    Luego de identificar si la fuerza es en tracción o compresión, calcula el área requerida para cumplir con la fluencia de la      barra, obteniendo de esta el radio mínimo de la barra con el espesor igual al radio mínimo.
    Lo fundamental de la función es que toma el Rmin y recorre un arreglo de 501 elementos que son desde el Rmin al Rmin + 500      mm.
+   Para cada R dentro de este arreglo, se calcula un tmin. Para cada valor valor posible de t>tmin y t<R, se calcula el área, se    comprueba si es que cumple con la función "chequear_diseño" (la cual se adaptó para admitir valores variables) y en caso de      encontrar un área menor a algún caso anterior, se guarda el nuevo valor como Amin, guardando el R y t respectivo a esa área.
+   En caso de no cumplir con ningún caso, la función no efectúa cambios en los R y t originales.
 
 * Factores de utilizacion nuevos.
   
@@ -60,12 +62,8 @@
 
 * Desplazamiento vertical maximo antes de los cambios.
 
-![img](/desplazamientonodos.png)
+![img](/desplazamientonodos.jpg)
 
 Se observan los datos respectivos al eje Z , el mayor seria claramente 1 y 6 e cargas muertas y nodo 3 en cargas vivas. 
-
-* Desplazamiento vertical maximo despues de los cambios.
-
-  *------
 
 * Comentarios sobre nueva distribucion FU

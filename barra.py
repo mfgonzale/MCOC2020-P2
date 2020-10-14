@@ -162,7 +162,7 @@ class Barra(object):
 		"""
 		FU = self.obtener_factor_utilizacion(Fu, ϕ)
 		L = self.calcular_largo(ret)
-		if FU == 1:
+		if FU == 1 and self.chequear_diseño(Fu, ret, ϕ):
 			return None
 		if Fu<0:
 			Areq = -Fu/(ϕ*self.σy)

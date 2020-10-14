@@ -6,8 +6,26 @@
 
 * Rediseño de 5 barras.
   
-  *asdasd
+  *Barra Nodo 0,3
+  
+  ![imagen](/03.jpg)
+  
+  *Barra Nodo 5,3
+  
+  ![imagen](/53.jpg)
+  
+  *Barra Nodo 1,4
+  
+  ![imagen](/14.jpg)
+ 
+  *Barra Nodo 6,4
+ 
+  ![imagen](/64.jpg)
 
+  *Barra Nodo 0,5
+  
+  ![imagen](/05.jpg)
+  
 * Funcion Rediseño de cada barra.
   
   *sadadad
@@ -27,8 +45,14 @@
 ![imagen](/fuerzas12d16l.png)
 
 * Deformada para cada combinacion de carga.
-
-![AB_plot_performance](/Grafico.png)
+ 
+ * deformada para 1.4D
+ 
+ ![img](/deformada14d.png)
+ 
+ * deformada para 1.2D + 1.6L
+ 
+ ![img](/deformada12d16l.png)
 
 * Desplazamiento vertical maximo antes de los cambios.
 

@@ -96,32 +96,43 @@ class Barra(object):
 
 
 
-	def chequear_diseño(self, Fu, ret, ϕ=0.9,R=0,t=0):
+	def chequear_diseño(self, Fu, ret, ϕ=0.9,R=None,t=None):
 		"""Para la fuerza Fu (proveniente de una combinacion de cargas)
 		revisar si esta barra cumple las disposiciones de diseño.
 		"""
-		if R==0 and t==0:
+		if R==0 or t==0:
+			return False
+		if R==None or t==None:
 			R = self.R
 			t = self.t
+		if t>R:
+			return False
 		L = self.calcular_largo(ret)
 		A = np.pi*(R**2) - np.pi*((R-t)**2)
 		I = (np.pi/4)*(R**4 - (R - t)**4)
 		i = np.sqrt(I/A)
 		esbeltez = L/i
-		if esbeltez<300:
+		if esbeltez<300.:
 			#print(f'Barra {[self.ni,self.nj]} es muy esbelta')
+			#print(f'{L},{R},{t}')
+			#print(esbeltez)
 			return False
 		elif Fu>0:
 			Pn = min(A*self.σy,(np.pi**2)*self.E*I/(L**2))
 			if Pn*ϕ<Fu:
 				#print(f'Barra {[self.ni,self.nj]} falla en compresion')
 				return False
+			else:
+				return True
 		elif Fu<0:
 			Fn = A*self.σy
 			if Fn*ϕ<-Fu:
 				#print(f'Barra {[self.ni,self.nj]} falla en traccion')
 				return False
+			else:
+				return True
 		else:
+			print(True)
 			return True
 
 
@@ -155,17 +166,30 @@ class Barra(object):
 			return None
 		if Fu<0:
 			Areq = -Fu/(ϕ*self.σy)
-			Rmin = int(np.sqrt(Areq/np.pi))
-			R = np.linspace(Rmin,Rmin + 50.,51)
+			Rmin = int(np.sqrt(Areq/np.pi)*1000.)/1000.
+			if Rmin==0.0:
+				Rmin = 0.001
+			R = np.linspace(Rmin,Rmin + .500,501)
 			soluciones = [Rmin,Rmin]#R,t
-			Amin = Areq + 200.
+			Amin = Areq+1.
 			for r in R:
-				t = int((np.sqrt(np.pi*r**2 - Areq) + r*np.sqrt(np.pi))/np.sqrt(np.pi))
-				A = np.pi*(r**2) - np.pi*((r-t)**2)
-				if self.chequear_diseño(Fu, ret, ϕ,R=r,t=t) and A<Amin:
-					soluciones[0] = r
-					soluciones[1] = t
-					Amin = A
+				if (np.pi*r**2 - Areq)<0. or r==0:
+					continue
+				tmin = - (np.sqrt(np.pi*r**2 - Areq) - r*np.sqrt(np.pi))/np.sqrt(np.pi)
+				#print(f'r= {r}, tmin = {tmin}')
+				#print(tmin)
+				#print(np.linspace(0.,r,int(r*1000.)+1))
+				for t in np.linspace(0.,r,int(r*1000.)+1):
+					if t==0 or t<tmin:
+						continue
+					A = np.pi*(r**2) - np.pi*((r-t)**2)
+					#print(A)
+					if self.chequear_diseño(Fu, ret, ϕ,R=r,t=t) and A<Amin:
+						#print(t)
+						soluciones[0] = r
+						soluciones[1] = t
+						Amin = A
+				#print(f"A = {A},Amin={Amin}")
 			if not self.chequear_diseño(Fu, ret, ϕ,R=soluciones[0],t=soluciones[1]):
 				return None
 			else:
@@ -174,17 +198,30 @@ class Barra(object):
 				return None
 		if Fu>=0:
 			Areq = Fu/(ϕ*self.σy)
-			Rmin = int(np.sqrt(Areq/np.pi))
-			R = np.linspace(Rmin,Rmin + 50.,51)
+			Rmin = int(np.sqrt(Areq/np.pi)*1000.)/1000.
+			if Rmin==0.0:
+				Rmin = 0.001
+			R = np.linspace(Rmin,Rmin + .500,501)
 			soluciones = [Rmin,Rmin]#R,t
-			Amin = Areq + 200.
+			Amin = Areq+1.
 			for r in R:
-				t = int((np.sqrt(np.pi*r**2 - Areq) + r*np.sqrt(np.pi))/np.sqrt(np.pi))
-				A = np.pi*(r**2) - np.pi*((r-t)**2)
-				if self.chequear_diseño(Fu, ret, ϕ,R=r,t=t) and A<Amin:
-					soluciones[0] = r
-					soluciones[1] = t
-					Amin = A
+				if (np.pi*r**2 - Areq)<0. or r==0:
+					continue
+				tmin = - (np.sqrt(np.pi*r**2 - Areq) - r*np.sqrt(np.pi))/np.sqrt(np.pi)
+				#print(f'r= {r}, tmin = {tmin}')
+				#print(tmin)
+				#print(np.linspace(0.,r,int(r*1000.)+1))
+				for t in np.linspace(0.,r,int(r*1000.)+1):
+					if t==0 or t<tmin:
+						continue
+					A = np.pi*(r**2) - np.pi*((r-t)**2)
+					#print(A)
+					if self.chequear_diseño(Fu, ret, ϕ,R=r,t=t) and A<Amin:
+						#print(t)
+						soluciones[0] = r
+						soluciones[1] = t
+						Amin = A
+				#print(f"A = {A},Amin={Amin}")
 			if not self.chequear_diseño(Fu, ret, ϕ,R=soluciones[0],t=soluciones[1]):
 				return None
 			else:

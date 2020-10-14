@@ -67,3 +67,4 @@
 Se observan los datos respectivos al eje Z , el mayor seria claramente 1 y 6 e cargas muertas y nodo 3 en cargas vivas. 
 
 * Comentarios sobre nueva distribucion FU
+  * Existen 2 opciones en el caso de que la FU aumena esto significaria que el diseño original no cumple. SI el FU disminuye el rediseño sera la mejor opcion

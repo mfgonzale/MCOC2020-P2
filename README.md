@@ -5,7 +5,7 @@
 ![imagen](/Ret1.png)
 
 * Rediseño de 5 barras.
-  
+  Se seleccionaron 5 barras del reticulado. La barra 0-3 en la cual su R cambió a 3cm y su t a 1,7 cm, la barra 5-3 con R igual a 3,3cm y t igual a 3,3cm, la barra 1-4 con R igual a 3,3cm y t igual a 3,3 cm, la barra 6-4 con R igual a 3,3cm y t igual a 5,7cm y la barra 0-5 con R igual a 3,3cm y t igual a 3,3cm. 
 
   *Barra Nodo 0,3
   
@@ -22,8 +22,6 @@
   *Barra Nodo 6,4
  
   ![imagen](/64.jpg)
-
-  *Se seleccionaron 5 barras del reticulado. La barra 0-3 en la cual su R cambió a 3cm y su t a 1,7 cm, la barra 5-3 con R igual a 3,3cm y t igual a 3,3cm, la barra 1-4 con R igual a 3,3cm y t igual a 3,3 cm, la barra 6-4 con R igual a 3,3cm y t igual a 5,7cm y la barra 0-5 con R igual a 3,3cm y t igual a 3,3cm. 
 
 
   *Barra Nodo 0,5
